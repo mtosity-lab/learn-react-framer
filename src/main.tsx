@@ -8,6 +8,8 @@ import { UseInView } from "./pages/tom/UseInView";
 import { UseScroll } from "./pages/tom/UseScroll";
 import { UseScrollAdvanced } from "./pages/tom/UseScrollAdvanced";
 import { UseScrollWithContainer } from "./pages/tom/UseScrollWithContainer";
+import { RevealLinks } from "./pages/tom/RevealLinks";
+import { SlideTabs } from "./pages/tom/SlideTabs";
 
 const router = createBrowserRouter([
   {
@@ -33,6 +35,14 @@ const router = createBrowserRouter([
       {
         path: "use-scroll-with-container",
         element: <UseScrollWithContainer />,
+      },
+      {
+        path: "reveal-links",
+        element: <RevealLinks />,
+      },
+      {
+        path: "slide-tabs",
+        element: <SlideTabs />,
       },
     ],
   },
