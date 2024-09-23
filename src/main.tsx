@@ -10,6 +10,7 @@ import { UseScrollAdvanced } from "./pages/tom/UseScrollAdvanced";
 import { UseScrollWithContainer } from "./pages/tom/UseScrollWithContainer";
 import { RevealLinks } from "./pages/tom/RevealLinks";
 import { SlideTabs } from "./pages/tom/SlideTabs";
+import { MTosity } from "./pages/mtosity";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
         element: <SlideTabs />,
       },
     ],
+  },
+  {
+    path: "/mtosity",
+    element: <MTosity />,
   },
 ]);
 
