@@ -21,11 +21,17 @@ export const MTosity = () => {
 
   const [stage, setStage] = useState<Stage>();
   useLayoutEffect(() => {
-    if (!letterRef.current) return;
-    const size = window
-      .getComputedStyle(letterRef.current, null)
-      .getPropertyValue("font-size");
-    setFontSize(parseFloat(size));
+    const updateSize = () => {
+      if (!letterRef.current) return;
+      const size = window
+        .getComputedStyle(letterRef.current, null)
+        .getPropertyValue("font-size");
+      setFontSize(parseFloat(size));
+    };
+
+    window.addEventListener("resize", updateSize);
+    updateSize();
+    return () => window.removeEventListener("resize", updateSize);
   }, [letterRef]);
 
   const { scrollYProgress } = useScroll({
@@ -193,8 +199,9 @@ export const MTosity = () => {
         },
         animate: {
           y: stage === Stage.EXPAND ? -fontSize * 1.2 : 0,
-          x: stage === Stage.EXPAND ? -(fontSize * 2) : -(fontSize * 3),
+          x: stage === Stage.EXPAND ? -(fontSize * 2.2) : -(fontSize * 2.8),
           opacity: 1,
+          scale: stage === Stage.EXPAND ? 0.8 : 1,
         },
         transition: {
           duration: stage === Stage.EXPAND ? DURATION / 1 : DURATION,
@@ -208,11 +215,11 @@ export const MTosity = () => {
     <section
       ref={targetRef}
       className="block gap-2 bg-zinc-950 text-white
-    text-4xl font-bold sm:text-7xl md:text-8xl lg:text-9xl
+    text-4xl font-bold sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl
     "
       style={{
-        height: "400vh",
-        fontFamily: "'Merienda', cursive",
+        height: "300vh",
+        fontFamily: "'Tektur', sans-serif",
       }}
     >
       <div className="sticky top-1/3 tracking-widest text-center text-nowrap overflow-x-clip h-screen">
@@ -255,36 +262,38 @@ export const MTosity = () => {
             </motion.span>
           ))}
         </motion.p>
-        <motion.div
-          className="absolute -z-10 relative"
-          initial={{
-            scale: 0,
-            opacity: 0,
-            x: fontSize * 6,
-          }}
-          animate={
-            stage === Stage.EXPAND
-              ? {
-                  x: fontSize * 2.5,
-                  y: -fontSize * 5,
-                  scale: 0.6,
-                  opacity: 0.6,
-                }
-              : undefined
-          }
-          transition={{
-            delay: stage === Stage.EXPAND ? DELAY_DEFAULT : undefined,
-          }}
-        >
-          <img src={mtImg} alt="mt" />
-          <Player
-            autoplay
-            loop
-            src={WaveJson}
-            style={{ height: "300px", width: "300px" }}
-            className="absolute top-0 left-80"
-          />
-        </motion.div>
+        <div className="flex justify-center">
+          <motion.div
+            className="-z-10"
+            initial={{
+              scale: 0,
+              opacity: 0,
+              // x: fontSize * 6,
+            }}
+            animate={
+              stage === Stage.EXPAND
+                ? {
+                    // x: -fontSize * 1,
+                    // y: -128 * 5 + fontSize * 1,
+                    scale: 0.6,
+                    opacity: 0.8,
+                  }
+                : undefined
+            }
+            transition={{
+              delay: stage === Stage.EXPAND ? DELAY_DEFAULT : undefined,
+            }}
+          >
+            <img src={mtImg} alt="mt" />
+            <Player
+              autoplay
+              loop
+              src={WaveJson}
+              style={{ height: "300px", width: "300px" }}
+              className="absolute top-0 left-80"
+            />
+          </motion.div>
+        </div>
         <div
           style={{
             backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke-width='2' stroke='%2318181b'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e")`,
