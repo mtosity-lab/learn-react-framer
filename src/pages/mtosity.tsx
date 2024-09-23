@@ -1,6 +1,9 @@
 import { useMotionValueEvent, useScroll } from "framer-motion";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import mtImg from "../assets/mt.png";
+import WaveJson from "../assets/wave.json";
+import { Player } from "@lottiefiles/react-lottie-player";
 
 const DURATION = 0.6;
 const STAGGER = 0.05;
@@ -14,14 +17,15 @@ enum Stage {
 export const MTosity = () => {
   const targetRef = useRef(null);
   const letterRef = useRef<HTMLParagraphElement>(null);
-  const [letterHeight, setLetterHeight] = useState(0);
-  const [letterWidth, setLetterWidth] = useState(0);
+  const [fontSize, setFontSize] = useState(0);
 
   const [stage, setStage] = useState<Stage>();
   useLayoutEffect(() => {
     if (!letterRef.current) return;
-    setLetterHeight(letterRef.current.offsetHeight);
-    setLetterWidth(letterRef.current.offsetWidth);
+    const size = window
+      .getComputedStyle(letterRef.current, null)
+      .getPropertyValue("font-size");
+    setFontSize(parseFloat(size));
   }, [letterRef]);
 
   const { scrollYProgress } = useScroll({
@@ -50,17 +54,17 @@ export const MTosity = () => {
           },
         },
         initial: {
-          y: letterWidth * 4,
-          x: letterWidth * 4,
+          y: fontSize * 4,
+          x: fontSize * 4,
           opacity: 0,
         },
         animate: {
-          y: stage === Stage.EXPAND ? -(letterHeight * 2) : 0,
-          x: stage === Stage.EXPAND ? letterWidth * 0.1 : letterWidth * 2.5,
+          y: stage === Stage.EXPAND ? -(fontSize * 2) : 0,
+          x: stage === Stage.EXPAND ? fontSize * 3 : fontSize * 3.7,
           opacity: 1,
         },
         transition: {
-          duration: stage === Stage.EXPAND ? DURATION / 2 : DURATION,
+          duration: stage === Stage.EXPAND ? DURATION / 1 : DURATION,
           delay: stage === undefined ? STAGGER * 0 + DELAY_DEFAULT : 0,
         },
       },
@@ -76,16 +80,17 @@ export const MTosity = () => {
           },
         },
         initial: {
-          x: 210,
+          y: 100,
           opacity: 0,
         },
         animate: {
-          y: stage === Stage.EXPAND ? -(letterHeight * 1.2) : 0,
-          x: stage === Stage.EXPAND ? -(letterWidth * 1.8) : letterWidth * 1.1,
+          y: stage === Stage.EXPAND ? -(fontSize * 1) : 0,
+          x: stage === Stage.EXPAND ? fontSize * 1 : fontSize * 1.8,
           opacity: 1,
+          scale: 1,
         },
         transition: {
-          duration: stage === Stage.EXPAND ? DURATION / 2 : DURATION,
+          duration: stage === Stage.EXPAND ? DURATION / 1 : DURATION,
           delay: stage === undefined ? STAGGER * 1 + DELAY_DEFAULT : 0,
         },
       },
@@ -98,10 +103,10 @@ export const MTosity = () => {
         animate: {
           y: 0,
           opacity: 1,
-          x: stage === Stage.EXPAND ? -(letterWidth * 2) : 0,
+          x: stage === Stage.EXPAND ? 0 : 0,
         },
         transition: {
-          duration: stage === Stage.EXPAND ? DURATION / 2 : DURATION,
+          duration: stage === Stage.EXPAND ? DURATION / 1 : DURATION,
           delay: stage === undefined ? STAGGER * 2 + DELAY_DEFAULT : 0,
         },
       },
@@ -113,11 +118,11 @@ export const MTosity = () => {
         },
         animate: {
           y: 0,
-          x: stage === Stage.EXPAND ? -(letterWidth * 2) : 0,
+          x: stage === Stage.EXPAND ? 0 : 0,
           opacity: 1,
         },
         transition: {
-          duration: stage === Stage.EXPAND ? DURATION / 2 : DURATION,
+          duration: stage === Stage.EXPAND ? DURATION / 1 : DURATION,
           delay: stage === undefined ? STAGGER * 3 + DELAY_DEFAULT : 0,
         },
         children: {
@@ -138,11 +143,11 @@ export const MTosity = () => {
         },
         animate: {
           y: 0,
-          x: stage === Stage.EXPAND ? -(letterWidth * 2) : -(letterWidth * 0.3),
+          x: stage === Stage.EXPAND ? -(fontSize * 0.1) : -(fontSize * 0.5),
           opacity: 1,
         },
         transition: {
-          duration: stage === Stage.EXPAND ? DURATION / 2 : DURATION,
+          duration: stage === Stage.EXPAND ? DURATION / 1 : DURATION,
           delay: stage === undefined ? STAGGER * 4 + DELAY_DEFAULT : 0,
         },
       },
@@ -154,11 +159,11 @@ export const MTosity = () => {
         },
         animate: {
           y: 0,
-          x: stage === Stage.EXPAND ? -(letterWidth * 2) : -(letterWidth * 0.3),
+          x: stage === Stage.EXPAND ? -(fontSize * 0.2) : -(fontSize * 0.5),
           opacity: 1,
         },
         transition: {
-          duration: stage === Stage.EXPAND ? DURATION / 2 : DURATION,
+          duration: stage === Stage.EXPAND ? DURATION / 1 : DURATION,
           delay: stage === undefined ? STAGGER * 5 + DELAY_DEFAULT : 0,
         },
       },
@@ -187,20 +192,17 @@ export const MTosity = () => {
           opacity: 0,
         },
         animate: {
-          y: stage === Stage.EXPAND ? -letterHeight * 1.2 : 0,
-          x:
-            stage === Stage.EXPAND
-              ? -(letterWidth * 3.9)
-              : -(letterWidth * 2.1),
+          y: stage === Stage.EXPAND ? -fontSize * 1.2 : 0,
+          x: stage === Stage.EXPAND ? -(fontSize * 2) : -(fontSize * 3),
           opacity: 1,
         },
         transition: {
-          duration: stage === Stage.EXPAND ? DURATION / 2 : DURATION,
+          duration: stage === Stage.EXPAND ? DURATION / 1 : DURATION,
           delay: stage === undefined ? STAGGER * 6 + DELAY_DEFAULT : 0,
         },
       },
     ];
-  }, [stage, letterWidth, letterHeight]);
+  }, [stage, fontSize]);
 
   return (
     <section
@@ -213,44 +215,39 @@ export const MTosity = () => {
         fontFamily: "'Merienda', cursive",
       }}
     >
-      <div className="sticky top-1/3 tracking-widest text-center">
-        <motion.p initial="initial" className="relative">
+      <div className="sticky top-1/3 tracking-widest text-center text-nowrap overflow-x-clip h-screen">
+        <motion.p className="z-0">
           {config.map((item, idx) => (
             <motion.span
               key={`mtosity-${item.letter}-${idx}`}
-              ref={item.letter === "M" ? letterRef : null}
-              initial="initial"
-              animate="animate"
-              variants={{
-                initial: item.initial,
-                animate: item.animate,
-              }}
+              initial={item.initial}
+              animate={item.animate}
               transition={item.transition}
               className="inline-block"
+              layout="position"
             >
               {item.leftChildren ? (
                 <motion.span
-                  initial="initial"
-                  animate="animate"
-                  variants={{
-                    initial: item.leftChildren.initial,
-                    animate: item.leftChildren.animate,
-                  }}
+                  initial={item.leftChildren.initial}
+                  animate={item.leftChildren.animate}
                   transition={item.transition}
+                  className="inline-block"
                 >
                   {item.leftChildren.letter}
                 </motion.span>
               ) : null}
-              <span className="text-lime-300">{item.letter}</span>
+              <span
+                className="text-lime-300"
+                ref={item.letter === "S" ? letterRef : null}
+              >
+                {item.letter}
+              </span>
               {item.children ? (
                 <motion.span
-                  initial="initial"
-                  animate="animate"
-                  variants={{
-                    initial: item.children.initial,
-                    animate: item.children.animate,
-                  }}
+                  initial={item.children.initial}
+                  animate={item.children.animate}
                   transition={item.transition}
+                  className="inline-block"
                 >
                   {item.children.letter}
                 </motion.span>
@@ -258,6 +255,36 @@ export const MTosity = () => {
             </motion.span>
           ))}
         </motion.p>
+        <motion.div
+          className="absolute -z-10 relative"
+          initial={{
+            scale: 0,
+            opacity: 0,
+            x: fontSize * 6,
+          }}
+          animate={
+            stage === Stage.EXPAND
+              ? {
+                  x: fontSize * 2.5,
+                  y: -fontSize * 5,
+                  scale: 0.6,
+                  opacity: 0.6,
+                }
+              : undefined
+          }
+          transition={{
+            delay: stage === Stage.EXPAND ? DELAY_DEFAULT : undefined,
+          }}
+        >
+          <img src={mtImg} alt="mt" />
+          <Player
+            autoplay
+            loop
+            src={WaveJson}
+            style={{ height: "300px", width: "300px" }}
+            className="absolute top-0 left-80"
+          />
+        </motion.div>
         <div
           style={{
             backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke-width='2' stroke='%2318181b'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e")`,
